@@ -124,14 +124,25 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 **LIVRABLE : Remplir le tableau**
 
 | Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---:             | :---:                  | :---:| :------: | :------: | :----: |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
-|                   |                        |      |          |          |        |
+| :---------------: | :--------------------: | :--: | :------: | :------: | :----: |
+|        LAN        |          WAN           | UDP  |    *     |    53    | Accept |
+|        LAN        |          WAN           | TCP  |    *     |    53    | Accept |
+|        WAN        |          LAN           | UDP  |    53    |    *     | Accept |
+|        WAN        |          LAN           | TCP  |    53    |    *     | Accept |
+|        LAN        |          WAN           | ICMP |    *     |    *     | Accept |
+|        LAN        |          DMZ           | ICMP |    *     |    *     | Accept |
+|        DMZ        |          LAN           | ICMP |    *     |    *     | Accept |
+|        LAN        |          WAN           | TCP  |    *     |    80    | Accept |
+|        LAN        |          WAN           | TCP  |    *     |   8080   | Accept |
+|        LAN        |          WAN           | TCP  |    *     |   443    | Accept |
+|        WAN        |          DMZ           | TCP  |    *     |    80    | Accept |
+|        DMZ        |          WAN           | TCP  |    80    |    *     | Accept |
+|        LAN        |          DMZ           | TCP  |    *     |    80    | Accept |
+|        DMZ        |          LAN           | TCP  |    80    |    *     | Accept |
+|        LAN        |          DMZ           | TCP  |    *     |    22    | Accept |
+|        LAN        |        FIREWALL        | TCP  |    *     |    22    | Accept |
+|        any        |          any           | TCP  |    *     |    *     |  Drop  |
+|        any        |          any           | UDP  |    *     |    *     |  Drop  |
 
 ---
 
@@ -228,6 +239,8 @@ ping 192.168.200.3
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
 
+![ping_client_to_server](C:\Users\dasil\Documents\HEIG-VD\Annee3\Semestre2\SRX\2.Labo\labo2\Teaching-HEIGVD-SRX-2020-Labo-Firewall\figures\ping_client_to_server.PNG)
+
 ---
 
 En effet, la communication entre les clients dans le LAN et les serveurs dans la DMZ doit passer à travers le Firewall. Il faut donc définir le Firewall comme passerelle par défaut pour le client dans le LAN et le serveur dans la DMZ.
@@ -283,6 +296,8 @@ ping 192.168.100.3
 
 **LIVRABLE : capture d'écran de votre nouvelle tentative de ping.**
 
+![ping_server_to_client](C:\Users\dasil\Documents\HEIG-VD\Annee3\Semestre2\SRX\2.Labo\labo2\Teaching-HEIGVD-SRX-2020-Labo-Firewall\figures\ping_server_to_client.PNG)
+
 ---
 
 La communication est maintenant possible entre les deux machines. Pourtant, si vous essayez de communiquer depuis le client ou le serveur vers l'Internet, ça ne devrait pas encore fonctionner sans une manipulation supplémentaire au niveau du firewall. Vous pouvez le vérifier avec un ping depuis le client ou le serveur vers une adresse Internet. 
@@ -296,6 +311,8 @@ ping 8.8.8.8
 ---
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet.**
+
+![ping_internet](C:\Users\dasil\Documents\HEIG-VD\Annee3\Semestre2\SRX\2.Labo\labo2\Teaching-HEIGVD-SRX-2020-Labo-Firewall\figures\ping_internet.jpg)
 
 ---
 
@@ -403,7 +420,7 @@ LIVRABLE : Commandes iptables
 
 ```bash
 ping 8.8.8.8
-``` 	            
+```
 Faire une capture du ping.
 
 ---
@@ -468,7 +485,6 @@ LIVRABLE : Commandes iptables
   <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) : 
   </li>                                  
 </ol>
-
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
@@ -479,7 +495,6 @@ LIVRABLE : Commandes iptables
   <li>Remarques (sur le message du premier ping)? 
   </li>                                  
 </ol>
-
 ---
 **Réponse**
 
@@ -523,7 +538,6 @@ LIVRABLE : Commandes iptables
   <li>Tester l’accès à ce serveur depuis le LAN utilisant utilisant wget (ne pas oublier les captures d'écran). 
   </li>                                  
 </ol>
-
 ---
 
 **LIVRABLE : capture d'écran.**
@@ -564,7 +578,6 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
   <li>Expliquer l'utilité de **ssh** sur un serveur. 
   </li>                                  
 </ol>
-
 ---
 **Réponse**
 
@@ -593,7 +606,6 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
   <li>Insérer la capture d’écran avec toutes vos règles iptables
   </li>                                  
 </ol>
-
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
