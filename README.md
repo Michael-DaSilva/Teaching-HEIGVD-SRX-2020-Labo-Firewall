@@ -107,13 +107,12 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
 7.	Le firewall peut être configuré à distance par **ssh** depuis votre client du LAN **uniquement**.
 8.	**Toute autre action est par défaut interdite**.
 
-# Regles de filtrage
+# Règles de filtrage
 
 <ol type="a" start="1">
   <li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (**Accept** ou **Drop**, éventuellement **Reject**).
   </li>                                  
 </ol>
-
 _Pour l'autorisation d'accès (**Accept**), il s'agit d'être le plus précis possible lors de la définition de la source et la destination : si l'accès ne concerne qu'une seule machine (ou un groupe), il faut préciser son adresse IP ou son nom (si vous ne pouvez pas encore la déterminer), et non la zone. 
 Appliquer le principe inverse (être le plus large possible) lorsqu'il faut refuser (**Drop**) une connexion._
 
@@ -132,17 +131,22 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 |        LAN        |          WAN           | ICMP |    *     |    *     | Accept |
 |        LAN        |          DMZ           | ICMP |    *     |    *     | Accept |
 |        DMZ        |          LAN           | ICMP |    *     |    *     | Accept |
+|        WAN        |          LAN           | ICMP |    *     |    *     | Accept |
 |        LAN        |          WAN           | TCP  |    *     |    80    | Accept |
 |        LAN        |          WAN           | TCP  |    *     |   8080   | Accept |
 |        LAN        |          WAN           | TCP  |    *     |   443    | Accept |
+|        WAN        |          LAN           | TCP  |    80    |    *     | Accept |
+|        WAN        |          LAN           | TCP  |   8080   |    *     | Accept |
+|        WAN        |          LAN           | TCP  |   443    |    *     | Accept |
 |        WAN        |          DMZ           | TCP  |    *     |    80    | Accept |
 |        DMZ        |          WAN           | TCP  |    80    |    *     | Accept |
 |        LAN        |          DMZ           | TCP  |    *     |    80    | Accept |
 |        DMZ        |          LAN           | TCP  |    80    |    *     | Accept |
-|        LAN        |          DMZ           | TCP  |    *     |    22    | Accept |
-|        LAN        |        FIREWALL        | TCP  |    *     |    22    | Accept |
-|        any        |          any           | TCP  |    *     |    *     |  Drop  |
-|        any        |          any           | UDP  |    *     |    *     |  Drop  |
+|        Client_in_LAN        |          DMZ           | TCP  |    *     |    22    | Accept |
+|        DMZ        |        Client_in_LAN        | TCP  |    22     |    *    | Accept |
+|        Client_in_LAN        |        192.168.100.2        | TCP  |    *    |    22    | Accept |
+|        192.168.100.2        |        Client_in_LAN        | TCP  |    22     |    *    | Accept |
+|        All        |          All           | All  |    *     |    *     |  Drop  |
 
 ---
 
@@ -169,7 +173,7 @@ Vous avez probablement déjà installé Git pour d’autres cours ou projets. Si
 
 ## Ajout des conteneurs et configuration du réseau
 
-### Le repertoire [scripts](https://github.com/arubinst/Teaching-HEIGVD-SRX-2020-Labo-Firewall/tree/master/scripts) contient des scripts qui automatisent des parties de ce travail. Il es cependant conseillé de la faire manuellement pour mieux comprendre la procédure.
+### Le répertoire [scripts](https://github.com/arubinst/Teaching-HEIGVD-SRX-2020-Labo-Firewall/tree/master/scripts) contient des scripts qui automatisent des parties de ce travail. Il es cependant conseillé de la faire manuellement pour mieux comprendre la procédure.
 
 Nous allons commencer par créer les réseaux **LAN** et **DMZ** dans le système réseau de Docker. Il suffit de tapper les commandes suivantes :
 
