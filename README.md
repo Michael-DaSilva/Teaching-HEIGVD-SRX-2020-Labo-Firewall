@@ -444,7 +444,7 @@ Faire une capture du ping.
 ---
 **LIVRABLE : capture d'écran de votre ping vers l'Internet.**
 
-![question_b_ping_client_to_internet](figures\question_b_ping_client_to_internet.PNG)
+![question_b_ping_client_to_internet](figures/question_b_ping_client_to_internet.PNG)
 
 ---
 
@@ -452,13 +452,13 @@ Faire une capture du ping.
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant : 
   </li>                                  
 </ol>
+
 | De Client\_in\_LAN à | OK/KO | Commentaires et explications                                 |
 | :------------------- | :---: | :----------------------------------------------------------- |
 | Interface DMZ du FW  |  KO   | Il faut implémenter les règles _INPUT / OUPUT_, les interfaces du FW ne sont pas encore accessibles. <br />Il n'y a que les règles pour le traverser (_FORWARD_) actuellement sur le FW. |
 | Interface LAN du FW  |  KO   | Idem que _Interface DMZ du FW_                               |
 | Client LAN           |  OK   | -                                                            |
 | Serveur WAN          |  OK   | -                                                            |
-
 
 | De Server\_in\_DMZ à | OK/KO | Commentaires et explications                                 |
 | :------------------- | :---: | :----------------------------------------------------------- |
@@ -532,6 +532,7 @@ iptables -A FORWARD -p tcp -i eth0 --sport 53 -d 192.168.100.0/24 -j ACCEPT
   </li>                                  
 </ol>
 ---
+
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
@@ -554,6 +555,7 @@ wget http://www.heig-vd.ch
 Commandes iptables :
 
 ---
+
 **LAN à WAN** 
 ```bash
 iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 80 -j ACCEPT
@@ -605,7 +607,7 @@ iptables -A FORWARD -p tcp -s 192.168.200.0/24 --sport 80 -d 192.168.100.0/24 -j
 
 **LIVRABLE : capture d'écran.**
 
-![**LIVRABLE : capture d'écran.**](figures/wget-heigvd.png)
+![wget-heig-vd](figures/wget-heigvd.png)
 
 ---
 
@@ -653,9 +655,11 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+
 ![ssh-DMZ.PNG](figures/ssh-DMZ.PNG)
 
 ---
+
 
 <ol type="a" start="9">
   <li>Expliquer l'utilité de **ssh** sur un serveur. 
@@ -675,6 +679,7 @@ Accès à l'interface à distance de façon sécurisé permettant exécuter ce q
   </li>                                  
 </ol>
 ---
+
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
