@@ -175,7 +175,7 @@ Vous avez probablement déjà installé Git pour d’autres cours ou projets. Si
 
 ### Le répertoire [scripts](https://github.com/arubinst/Teaching-HEIGVD-SRX-2020-Labo-Firewall/tree/master/scripts) contient des scripts qui automatisent des parties de ce travail. Il es cependant conseillé de la faire manuellement pour mieux comprendre la procédure.
 
-Nous allons commencer par créer les réseaux **LAN** et **DMZ** dans le système réseau de Docker. Il suffit de tapper les commandes suivantes :
+Nous allons commencer par créer les réseaux **LAN** et **DMZ** dans le système réseau de Docker. Il suffit de taper les commandes suivantes :
 
 ```bash
 docker network create --subnet 192.168.100.0/24 lan
@@ -189,7 +189,7 @@ Les images utilisées pour les conteneurs sont basées sur l'image officielle Ub
 ```bash
 docker build -t labofirewall .
 ```
-A partir de l'image, nous pouvons maintenant créer et executer les conteneurs. On va commencer avec le firewall :
+A partir de l'image, nous pouvons maintenant créer et exécuter les conteneurs. On va commencer avec le firewall :
 
 ```bash
 docker run -itd --cap-add=NET_ADMIN --cap-add=NET_RAW --name firewall --hostname Firewall labofirewall /bin/bash
@@ -357,10 +357,10 @@ Vérifiez que la connexion à l'Internet est maintenant possible depuis les deux
 
 ## Création de règles
 
-Une règle permet d’autoriser ou d’interdire une connexion. `iptables` met à disposition plusieurs options pour la création de ces règles. En particulier, on peut définir les politiques par défaut « Policy », des règles de filtrage pour le firewall (tableau filter) ou des fonctionnalités de translation d’adresses (tableau nat) :
+Une règle permet d’autoriser ou d’interdire une connexion. `iptables` met à disposition plusieurs options pour la création de ces règles. En particulier, on peut définir les politiques par défaut « Policy », des règles de filtrage pour le firewall (tableau filtrer) ou des fonctionnalités de translation d’adresses (tableau nat) :
 
 - Policy permet d’appliquer des règles générales (**vous devez configurer vos politiques en premier**)
-- Le tableau filter permet d’appliquer des règles de filtrage propres d’un firewall
+- Le tableau filtrer permet d’appliquer des règles de filtrage propres d’un firewall
 - Le tableau nat permet de paramétrer la translation d’adresses
 
 `iptables` vous permet la configuration de pare-feux avec et sans état. **Pour ce laboratoire, vous allez utiliser le mode avec état**. 
@@ -377,7 +377,7 @@ Sauvegarder la configuration du firewall dans le fichier `iptables.conf` :
 iptables-save > iptables.conf
 ```
 
-Récuperer la config sauvegardée :
+Récupérer la config sauvegardée :
 
 ```bash
 iptables-restore < iptables.conf
@@ -409,9 +409,23 @@ Ceci correspond a la **condition 2** du cahier des charges.
 Commandes iptables :
 
 ---
+**LAN --> DMZ**
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -p icmp -s 192.168.100.0/24 --icmp-type 8 -d 192.168.200.0/24 -j ACCEPT
+iptables -A FORWARD -p icmp -s 192.168.200.0/24 --icmp-type 0 -d 192.168.100.0/24 -j ACCEPT
+```
+**LAN --> WAN**
+
+```bash
+iptables -A FORWARD -p icmp -s 192.168.100.0/24 -o eth0 --icmp-type 8 -j ACCEPT
+iptables -A FORWARD -p icmp -i eth0 --icmp-type 0 -d 192.168.100.0/24 -j ACCEPT
+```
+**DMZ--> LAN**
+
+```bash
+iptables -A FORWARD -p icmp -s 192.168.200.0/24 --icmp-type 8 -d 192.168.100.0/24 -j ACCEPT
+iptables -A FORWARD -p icmp -s 192.168.100.0/24 --icmp-type 0 -d 192.168.200.0/24 -j ACCEPT
 ```
 ---
 
@@ -438,22 +452,20 @@ Faire une capture du ping.
   <li>Testez ensuite toutes les règles, depuis le Client_in_LAN puis depuis le serveur Web (Server_in_DMZ) et remplir le tableau suivant : 
   </li>                                  
 </ol>
+| De Client\_in\_LAN à | OK/KO | Commentaires et explications                                 |
+| :------------------- | :---: | :----------------------------------------------------------- |
+| Interface DMZ du FW  |  KO   | Il faut implémenter les règles _INPUT / OUPUT_, les interfaces du FW ne sont pas encore accessibles. <br />Il n'y a que les règles pour le traverser (_FORWARD_) actuellement sur le FW. |
+| Interface LAN du FW  |  KO   | Idem que _Interface DMZ du FW_                               |
+| Client LAN           |  OK   | -                                                            |
+| Serveur WAN          |  OK   | -                                                            |
 
 
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
-
-
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| De Server\_in\_DMZ à | OK/KO | Commentaires et explications                                 |
+| :------------------- | :---: | :----------------------------------------------------------- |
+| Interface DMZ du FW  |  KO   | Idem que _Interface DMZ du FW_                               |
+| Interface LAN du FW  |  KO   | Idem que _Interface DMZ du FW_                               |
+| Serveur DMZ          |  OK   | -                                                            |
+| Serveur WAN          |  KO   | Pas demandé dans le laboratoire et inutile (en règle générale c'est le WAN qui veut accéder à la DMZ et non l'inverse). |
 
 
 ## Règles pour le protocole DNS
@@ -473,6 +485,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![ping_client_google_FAIL](figures/ping_client_google_FAIL.PNG)
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -487,6 +501,20 @@ LIVRABLE : Commandes iptables
 
 ---
 
+**LAN à WAN** 
+
+```bash
+iptables -A FORWARD -p udp -s 192.168.100.0/24 -o eth0 --dport 53 -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 53 -j ACCEPT
+```
+**WAN à LAN** 
+
+```bash
+iptables -A FORWARD -p udp -i eth0 --sport 53 -d 192.168.100.0/24 -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 --sport 53 -d 192.168.100.0/24 -j ACCEPT
+```
+---
+
 <ol type="a" start="5">
   <li>Tester en réitérant la commande ping sur le serveur de test (Google ou autre) : 
   </li>                                  
@@ -494,6 +522,8 @@ LIVRABLE : Commandes iptables
 ---
 
 **LIVRABLE : capture d'écran de votre ping.**
+
+![ping_client_google_OK](figures/ping_client_google_OK.PNG)
 
 ---
 
@@ -505,6 +535,8 @@ LIVRABLE : Commandes iptables
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Le serveur DNS est le service permettant de transformer un nom FQDN en adresse IP. Or pour ce faire, il est nécessaire d'ouvrir le port DNS (port 53 TCP/UDP) permettant de faire cette traduction. Ce pour cela que le premier ping n'a pas fonctionné, mais lors de l'ajout des règles de *FORWARD* pour le DNS le ping fonctionne.
 
 ---
 
@@ -522,11 +554,19 @@ wget http://www.heig-vd.ch
 Commandes iptables :
 
 ---
+**LAN à WAN** 
+```bash
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 80 -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 8080 -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 443 -j ACCEPT
+```
+**WAN à LAN** 
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -p tcp -i eth0 --sport 80 -d 192.168.100.0/24 -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 --sport 8080 -d 192.168.100.0/24 -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 --sport 443 -d 192.168.100.0/24 -j ACCEPT
 ```
-
 ---
 
 * Créer et appliquer les règles adéquates avec des commandes iptables pour que la **condition 5 du cahier des charges** soit respectée.
@@ -535,8 +575,25 @@ Commandes iptables :
 
 ---
 
+**WAN à DMZ** 
+
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -p tcp -i eth0 -d 192.168.200.0/24 --dport 80 -j ACCEPT
+```
+**DMZ à WAN** 
+
+```bash
+iptables -A FORWARD -p tcp -s 192.168.200.0/24 -o eth0 --sport 80 -j ACCEPT
+```
+**LAN à DMZ** 
+
+```bash
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -d 192.168.200.0/24 --dport 80 -j ACCEPT
+```
+**DMZ à LAN** 
+
+```bash
+iptables -A FORWARD -p tcp -s 192.168.200.0/24 --sport 80 -d 192.168.100.0/24 -j ACCEPT
 ```
 ---
 
@@ -547,6 +604,8 @@ LIVRABLE : Commandes iptables
 ---
 
 **LIVRABLE : capture d'écran.**
+
+![**LIVRABLE : capture d'écran.**](figures/wget-heigvd.png)
 
 ---
 
@@ -561,9 +620,25 @@ LIVRABLE : Commandes iptables
 Commandes iptables :
 
 ---
+**Client\_in_LAN à DMZ** 
 
 ```bash
-LIVRABLE : Commandes iptables
+iptables -A FORWARD -p tcp -s 192.168.100.3/32 -d 192.168.200.0/24 --dport 22 -j ACCEPT
+```
+**DMZ à Client\_in_LAN** 
+
+```bash
+iptables -A FORWARD -p tcp -s 192.168.200.0/24 --sport 22 -d 192.168.100.3/32 -j ACCEPT
+```
+**Client\_in_LAN à eth1** 
+
+```bash
+iptables -A INPUT -p tcp -s 192.168.100.3/32 -i eth1 --dport 22 -j ACCEPT
+```
+**eth1 à Client\_in_LAN** 
+
+```bash
+iptables -A OUTPUT -p tcp -o eth1 --sport 22 -d 192.168.100.3/32 -j ACCEPT
 ```
 
 ---
@@ -578,6 +653,8 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 **LIVRABLE : capture d'écran de votre connexion ssh.**
 
+![ssh-DMZ.PNG](figures/ssh-DMZ.PNG)
+
 ---
 
 <ol type="a" start="9">
@@ -589,18 +666,20 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 **LIVRABLE : Votre réponse ici...**
 
+Accès à l'interface à distance de façon sécurisé permettant exécuter ce que l'on souhaite (moyennant les droits du compte connecté).
+
 ---
 
 <ol type="a" start="10">
   <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ? 
   </li>                                  
 </ol>
-
-
 ---
 **Réponse**
 
 **LIVRABLE : Votre réponse ici...**
+
+Le but est d'être le plus restrictif possible afin de réduire au maximum les failles. Par exemple ne mettre uniquement qu'une adresse IP au niveau de règles et pas un sous-réseau entier.
 
 ---
 
@@ -615,5 +694,7 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ---
 
 **LIVRABLE : capture d'écran avec toutes vos règles.**
+
+![iptables-full](figures/iptables-full.PNG)
 
 ---
