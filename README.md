@@ -113,7 +113,6 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
   <li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (**Accept** ou **Drop**, éventuellement **Reject**).
   </li>                                  
 </ol>
-
 _Pour l'autorisation d'accès (**Accept**), il s'agit d'être le plus précis possible lors de la définition de la source et la destination : si l'accès ne concerne qu'une seule machine (ou un groupe), il faut préciser son adresse IP ou son nom (si vous ne pouvez pas encore la déterminer), et non la zone. 
 Appliquer le principe inverse (être le plus large possible) lorsqu'il faut refuser (**Drop**) une connexion._
 
@@ -407,7 +406,15 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+#Règles pour le ping entre le LAN et la DMZ
+iptables -A FORWARD -p icmp --icmp-type 0 -s 192.168.200.0/24 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p icmp --icmp-type 8 -s 192.168.100.0/24 -d 192.168.200.0/24 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Règles pour le ping entre la DMZ et le LAN
+iptables -A FORWARD -p icmp --icmp-type 0 -s 192.168.100.0/24 -d 192.168.200.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p icmp --icmp-type 8 -s 192.168.200.0/24 -d 192.168.100.0/24 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Règles pour le ping entre le LAN et le WAN
+iptables -A FORWARD -p icmp --icmp-type 0 -i eth0 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p icmp --icmp-type 8 -s 192.168.100.0/24 -o eth0 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 ```
 ---
 
@@ -436,20 +443,20 @@ Faire une capture du ping.
 </ol>
 
 
-| De Client\_in\_LAN à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Client LAN           |       |                              |
-| Serveur WAN          |       |                              |
+| De Client\_in\_LAN à | OK/KO | Commentaires et explications                     |
+| :------------------- | :---: | :----------------------------------------------- |
+| Interface DMZ du FW  |  KO   | Ajout d'une règle pour pinger l'interface voulue |
+| Interface LAN du FW  |  KO   | Voir au-dessus                                   |
+| Client LAN           |  OK   |                                                  |
+| Serveur WAN          |  OK   |                                                  |
 
 
-| De Server\_in\_DMZ à | OK/KO | Commentaires et explications |
-| :---                 | :---: | :---                         |
-| Interface DMZ du FW  |       |                              |
-| Interface LAN du FW  |       |                              |
-| Serveur DMZ          |       |                              |
-| Serveur WAN          |       |                              |
+| De Server\_in\_DMZ à | OK/KO | Commentaires et explications                                 |
+| :------------------- | :---: | :----------------------------------------------------------- |
+| Interface DMZ du FW  |  KO   | Voir au-dessus                                               |
+| Interface LAN du FW  |  KO   | Voir au-dessus                                               |
+| Serveur DMZ          |  OK   |                                                              |
+| Serveur WAN          |  KO   | Cahier des charges où les serveurs     <br /> DMZ ne ping pas les serveurs WAN |
 
 
 ## Règles pour le protocole DNS
@@ -469,6 +476,8 @@ ping www.google.com
 
 **LIVRABLE : capture d'écran de votre ping.**
 
+![question_d_ping_google_dns](figures\question_d_ping_google_dns.PNG)
+
 ---
 
 * Créer et appliquer la règle adéquate pour que la **condition 1 du cahier des charges** soit respectée.
@@ -478,7 +487,7 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+
 ```
 
 ---
