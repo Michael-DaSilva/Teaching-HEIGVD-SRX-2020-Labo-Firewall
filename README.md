@@ -243,7 +243,7 @@ ping 192.168.200.3
 
 **LIVRABLE : capture d'écran de votre tentative de ping.**  
 
-![ping_client_to_server](figures\ping_client_to_server.PNG)
+![ping_client_to_server](figures/ping_client_to_server.PNG)
 
 ---
 
@@ -300,7 +300,7 @@ ping 192.168.100.3
 
 **LIVRABLE : capture d'écran de votre nouvelle tentative de ping.**
 
-![ping_server_to_client](figures\ping_server_to_client.PNG)
+![ping_server_to_client](figures/ping_server_to_client.PNG)
 
 ---
 
@@ -316,7 +316,7 @@ ping 8.8.8.8
 
 **LIVRABLE : capture d'écran de votre ping vers l'Internet.**
 
-![ping_internet](figures\ping_internet.jpg)
+![ping_internet](figures/ping_internet.jpg)
 
 ---
 
@@ -607,7 +607,7 @@ iptables -A FORWARD -p tcp -s 192.168.200.0/24 --sport 80 -d 192.168.100.0/24 -j
 
 **LIVRABLE : capture d'écran.**
 
-![wget-heig-vd](figures/wget-heigvd.png)
+![wget-heig-vd](figures/wget-heigvd.PNG)
 
 ---
 
