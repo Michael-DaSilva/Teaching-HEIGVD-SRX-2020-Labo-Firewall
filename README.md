@@ -236,8 +236,6 @@ ping 192.168.200.3
 ```
 ---
 
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
-
 ![ping_client_to_server](figures\ping_client_to_server.PNG)
 
 ---
@@ -293,8 +291,6 @@ ping 192.168.100.3
 
 ---
 
-**LIVRABLE : capture d'écran de votre nouvelle tentative de ping.**
-
 ![ping_server_to_client](figures\ping_server_to_client.PNG)
 
 ---
@@ -308,8 +304,6 @@ ping 8.8.8.8
 ```
 
 ---
-
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
 
 ![ping_internet](figures\ping_internet.jpg)
 
@@ -431,8 +425,6 @@ ping 8.8.8.8
 Faire une capture du ping.
 
 ---
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
-
 ![question_b_ping_client_to_internet](figures\question_b_ping_client_to_internet.PNG)
 
 ---
@@ -474,8 +466,6 @@ ping www.google.com
 
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
-
 ![question_d_ping_google_dns](figures\question_d_ping_google_dns.PNG)
 
 ---
@@ -487,7 +477,12 @@ Commandes iptables :
 ---
 
 ```bash
-
+#Règles pour le DNS (TCP)
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 53 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+#Règles pour le DNS (UDP)
+iptables -A FORWARD -p udp -s 192.168.100.0/24 -o eth0 --dport 53 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p udp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -498,7 +493,7 @@ Commandes iptables :
 </ol>
 ---
 
-**LIVRABLE : capture d'écran de votre ping.**
+![question_e_ping_dns](figures\question_e_ping_dns.PNG)
 
 ---
 
@@ -509,7 +504,7 @@ Commandes iptables :
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+
 
 ---
 
@@ -529,7 +524,14 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+#Commande pour HTTP/HTTPS de LAN à WAN
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 80 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 8080 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -o eth0 --dport 443 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Commande pour HTTP/HTTPS de WAN à LAN
+iptables -A FORWARD -p tcp -i eth0 --sport 80 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 --sport 8080 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A FORWARD -p tcp -i eth0 --sport 443 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -541,7 +543,14 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+#Commande pour HTTP de WAN à DMZ
+iptables -A FORWARD -p tcp -i eth0 -d 192.168.200.3/32 --dport 80 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Commande pour HTTP de DMZ à WAN
+iptables -A FORWARD -p tcp -s 192.168.200.3/32 -o eth0 --sport 80 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+#Commande pour HTTP de LAN à DMZ
+iptables -A FORWARD -p tcp -s 192.168.100.0/24 -d 192.168.200.3/32 --dport 80 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Commande pour HTTP de DMZ à LAN
+iptables -A FORWARD -p tcp -s 192.168.200.3/32 --sport 80 -d 192.168.100.0/24 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 ```
 ---
 
@@ -551,7 +560,7 @@ LIVRABLE : Commandes iptables
 </ol>
 ---
 
-**LIVRABLE : capture d'écran.**
+![question_g_wget_dmz](figures\question_g_wget_dmz.PNG)
 
 ---
 
@@ -568,7 +577,14 @@ Commandes iptables :
 ---
 
 ```bash
-LIVRABLE : Commandes iptables
+#Commande pour SSH du Client LAN au DMZ
+iptables -A FORWARD -p tcp -s 192.168.100.3/32 -d 192.168.200.3/32 --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Commande pour SSH du DMZ au ClientLAN
+iptables -A FORWARD -p tcp -s 192.168.200.3/32 --sport 22 -d 192.168.100.3/32 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+#Commande pour SSH du Client LAN au Firewall
+iptables -A INPUT -p tcp -s 192.168.100.3/32 --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+#Commande pour SSH du Firewall au Client LAN
+iptables -A OUTPUT -p tcp --sport 22 -d 192.168.100.3/32 -m conntrack --ctstate ESTABLISHED -j ACCEPT
 ```
 
 ---
@@ -579,9 +595,13 @@ Depuis le client dans le LAN, tester l’accès avec la commande suivante :
 ssh root@192.168.200.3 (password : celui que vous avez configuré)
 ```
 
----
+**SSH entre Client LAN et Server Web**
 
-**LIVRABLE : capture d'écran de votre connexion ssh.**
+![question_h_ssh_client_server](figures\question_h_ssh_client_server.PNG)
+
+**SSH entre Client LAN et Firewall**
+
+![question_h_ssh_client_firewall](figures\question_h_ssh_client_firewall.PNG)
 
 ---
 
@@ -592,7 +612,7 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Permet de configurer le serveur sans avoir besoin d'interface graphique (ainsi qu'un écran/clavier supplémentaire) et de le faire depuis un autre poste de façon sécurisé
 
 ---
 
@@ -600,12 +620,10 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
   <li>En général, à quoi faut-il particulièrement faire attention lors de l'écriture des règles du pare-feu pour ce type de connexion ? 
   </li>                                  
 </ol>
-
-
 ---
 **Réponse**
 
-**LIVRABLE : Votre réponse ici...**
+Ne pas laisser d'autres postes autre que celui ayant l'autorisation avoir accès sur le serveur en SSH (il pourrait avoir des attaques par brute force)
 
 ---
 
@@ -619,6 +637,6 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 </ol>
 ---
 
-**LIVRABLE : capture d'écran avec toutes vos règles.**
+![question_j_iptables_rules](figures\question_j_iptables_rules.PNG)
 
 ---
