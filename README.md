@@ -120,28 +120,34 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-**LIVRABLE : Remplir le tableau**
-
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---------------: | :--------------------: | :--: | :------: | :------: | :----: |
-|        LAN        |          WAN           | UDP  |    *     |    53    | Accept |
-|        LAN        |          WAN           | TCP  |    *     |    53    | Accept |
-|        WAN        |          LAN           | UDP  |    53    |    *     | Accept |
-|        WAN        |          LAN           | TCP  |    53    |    *     | Accept |
-|        LAN        |          WAN           | ICMP |    *     |    *     | Accept |
-|        LAN        |          DMZ           | ICMP |    *     |    *     | Accept |
-|        DMZ        |          LAN           | ICMP |    *     |    *     | Accept |
-|        LAN        |          WAN           | TCP  |    *     |    80    | Accept |
-|        LAN        |          WAN           | TCP  |    *     |   8080   | Accept |
-|        LAN        |          WAN           | TCP  |    *     |   443    | Accept |
-|        WAN        |          DMZ           | TCP  |    *     |    80    | Accept |
-|        DMZ        |          WAN           | TCP  |    80    |    *     | Accept |
-|        LAN        |          DMZ           | TCP  |    *     |    80    | Accept |
-|        DMZ        |          LAN           | TCP  |    80    |    *     | Accept |
-|        LAN        |          DMZ           | TCP  |    *     |    22    | Accept |
-|        LAN        |        FIREWALL        | TCP  |    *     |    22    | Accept |
-|        any        |          any           | TCP  |    *     |    *     |  Drop  |
-|        any        |          any           | UDP  |    *     |    *     |  Drop  |
+|      Adresse IP source      |   Adresse IP destination    | Type | Port src | Port dst | Action | Flag |
+| :-------------------------: | :-------------------------: | :--: | :------: | :------: | :----: | ---- |
+|             LAN             |    interface WAN (eth0)     | UDP  |    *     |    53    | Accept |      |
+|    interface WAN (eth0)     |             LAN             | UDP  |    53    |    *     | Accept | ACK  |
+|             LAN             |    interface WAN (eth0)     | TCP  |    *     |    53    | Accept |      |
+|    interface WAN (eth0)     |             LAN             | TCP  |    53    |    *     | Accept | ACK  |
+|             LAN             |    interface WAN (eth0)     | ICMP |    *     |    *     | Accept |      |
+|    interface WAN (eth0)     |             LAN             | ICMP |    *     |    *     | Accept | ACK  |
+|             LAN             |             DMZ             | ICMP |    *     |    *     | Accept |      |
+|             DMZ             |             LAN             | ICMP |    *     |    *     | Accept | ACK  |
+|             DMZ             |             LAN             | ICMP |    *     |    *     | Accept |      |
+|             LAN             |             DMZ             | ICMP |    *     |    *     | Accept | ACK  |
+|             LAN             |    interface WAN (eth0)     | TCP  |    *     |    80    | Accept |      |
+|    interface WAN (eth0)     |             LAN             | TCP  |    80    |    *     | Accept | ACK  |
+|             LAN             |    interface WAN (eth0)     | TCP  |    *     |   8080   | Accept |      |
+|    interface WAN (eth0)     |             LAN             | TCP  |   8080   |    *     | Accept | ACK  |
+|             LAN             |    interface WAN (eth0)     | TCP  |    *     |   443    | Accept |      |
+|    interface WAN (eth0)     |             LAN             | TCP  |   443    |    *     | Accept | ACK  |
+|    interface WAN (eth0)     | Serveur_Web (192.168.200.3) | TCP  |    *     |    80    | Accept |      |
+| Serveur_Web (192.168.200.3) |    interface WAN (eth0)     | TCP  |    80    |    *     | Accept | ACK  |
+|             LAN             | Serveur_Web (192.168.200.3) | TCP  |    *     |    80    | Accept |      |
+| Serveur_Web (192.168.200.3) |             LAN             | TCP  |    80    |    *     | Accept | ACK  |
+| Client_Lan (192.168.100.3)  | Serveur_Web (192.168.200.3) | TCP  |    *     |    22    | Accept |      |
+| Serveur_Web (192.168.200.3) | Client_Lan (192.168.100.3)  | TCP  |    22    |    *     | Accept | ACK  |
+| Client_Lan (192.168.100.3)  |  interface Firewall (eth1)  | TCP  |    *     |    22    | Accept |      |
+|  interface Firewall (eth1)  | Client_Lan (192.168.100.3)  | TCP  |    22    |    *     | Accept | ACK  |
+|             any             |             any             | TCP  |    *     |    *     |  Drop  |      |
+|             any             |             any             | UDP  |    *     |    *     |  Drop  |      |
 
 ---
 
@@ -448,7 +454,7 @@ Faire une capture du ping.
 | Interface DMZ du FW  |  KO   | Voir au-dessus                                               |
 | Interface LAN du FW  |  KO   | Voir au-dessus                                               |
 | Serveur DMZ          |  OK   |                                                              |
-| Serveur WAN          |  KO   | Cahier des charges où les serveurs     <br /> DMZ ne ping pas les serveurs WAN |
+| Serveur WAN          |  KO   | Cahier des charges où les serveurs<br />DMZ ne ping pas les serveurs WAN |
 
 
 ## Règles pour le protocole DNS
@@ -640,3 +646,4 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ![question_j_iptables_rules](figures\question_j_iptables_rules.PNG)
 
 ---
+
