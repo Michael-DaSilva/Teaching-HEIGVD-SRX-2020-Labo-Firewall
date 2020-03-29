@@ -107,7 +107,7 @@ Pour établir la table de filtrage, voici les **conditions à respecter** dans l
 7.	Le firewall peut être configuré à distance par **ssh** depuis votre client du LAN **uniquement**.
 8.	**Toute autre action est par défaut interdite**.
 
-# Règles de filtrage
+# Regles de filtrage
 
 <ol type="a" start="1">
   <li>En suivant la méthodologie vue en classe, établir la table de filtrage avec précision en spécifiant la source et la destination, le type de trafic (TCP/UDP/ICMP/any), les ports sources et destinations ainsi que l'action désirée (**Accept** ou **Drop**, éventuellement **Reject**).
@@ -120,7 +120,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 
 ---
 
-<<<<<<< HEAD
 |      Adresse IP source      |   Adresse IP destination    | Type | Port src | Port dst | Action | Flag |
 | :-------------------------: | :-------------------------: | :--: | :------: | :------: | :----: | ---- |
 |             LAN             |    interface WAN (eth0)     | UDP  |    *     |    53    | Accept |      |
@@ -149,35 +148,6 @@ _Lors de la définition d'une zone, spécifier l'adresse du sous-réseau IP avec
 |  interface Firewall (eth1)  | Client_Lan (192.168.100.3)  | TCP  |    22    |    *     | Accept | ACK  |
 |             any             |             any             | TCP  |    *     |    *     |  Drop  |      |
 |             any             |             any             | UDP  |    *     |    *     |  Drop  |      |
-=======
-**LIVRABLE : Remplir le tableau**
-
-| Adresse IP source | Adresse IP destination | Type | Port src | Port dst | Action |
-| :---------------: | :--------------------: | :--: | :------: | :------: | :----: |
-|        LAN        |          WAN           | UDP  |    *     |    53    | Accept |
-|        LAN        |          WAN           | TCP  |    *     |    53    | Accept |
-|        WAN        |          LAN           | UDP  |    53    |    *     | Accept |
-|        WAN        |          LAN           | TCP  |    53    |    *     | Accept |
-|        LAN        |          WAN           | ICMP |    *     |    *     | Accept |
-|        LAN        |          DMZ           | ICMP |    *     |    *     | Accept |
-|        DMZ        |          LAN           | ICMP |    *     |    *     | Accept |
-|        WAN        |          LAN           | ICMP |    *     |    *     | Accept |
-|        LAN        |          WAN           | TCP  |    *     |    80    | Accept |
-|        LAN        |          WAN           | TCP  |    *     |   8080   | Accept |
-|        LAN        |          WAN           | TCP  |    *     |   443    | Accept |
-|        WAN        |          LAN           | TCP  |    80    |    *     | Accept |
-|        WAN        |          LAN           | TCP  |   8080   |    *     | Accept |
-|        WAN        |          LAN           | TCP  |   443    |    *     | Accept |
-|        WAN        |          DMZ           | TCP  |    *     |    80    | Accept |
-|        DMZ        |          WAN           | TCP  |    80    |    *     | Accept |
-|        LAN        |          DMZ           | TCP  |    *     |    80    | Accept |
-|        DMZ        |          LAN           | TCP  |    80    |    *     | Accept |
-|        Client_in_LAN        |          DMZ           | TCP  |    *     |    22    | Accept |
-|        DMZ        |        Client_in_LAN        | TCP  |    22     |    *    | Accept |
-|        Client_in_LAN        |        192.168.100.2        | TCP  |    *    |    22    | Accept |
-|        192.168.100.2        |        Client_in_LAN        | TCP  |    22     |    *    | Accept |
-|        All        |          All           | All  |    *     |    *     |  Drop  |
->>>>>>> 6eb0bc6594ea079f0359d035b59c46fd76d1d387
 
 ---
 
@@ -204,7 +174,7 @@ Vous avez probablement déjà installé Git pour d’autres cours ou projets. Si
 
 ## Ajout des conteneurs et configuration du réseau
 
-### Le répertoire [scripts](https://github.com/arubinst/Teaching-HEIGVD-SRX-2020-Labo-Firewall/tree/master/scripts) contient des scripts qui automatisent des parties de ce travail. Il es cependant conseillé de la faire manuellement pour mieux comprendre la procédure.
+### Le repertoire [scripts](https://github.com/arubinst/Teaching-HEIGVD-SRX-2020-Labo-Firewall/tree/master/scripts) contient des scripts qui automatisent des parties de ce travail. Il es cependant conseillé de la faire manuellement pour mieux comprendre la procédure.
 
 Nous allons commencer par créer les réseaux **LAN** et **DMZ** dans le système réseau de Docker. Il suffit de tapper les commandes suivantes :
 
@@ -272,13 +242,7 @@ ping 192.168.200.3
 ```
 ---
 
-<<<<<<< HEAD
 ![ping_client_to_server](figures\ping_client_to_server.PNG)
-=======
-**LIVRABLE : capture d'écran de votre tentative de ping.**  
-
-![ping_client_to_server](figures/ping_client_to_server.PNG)
->>>>>>> 6eb0bc6594ea079f0359d035b59c46fd76d1d387
 
 ---
 
@@ -333,13 +297,7 @@ ping 192.168.100.3
 
 ---
 
-<<<<<<< HEAD
 ![ping_server_to_client](figures\ping_server_to_client.PNG)
-=======
-**LIVRABLE : capture d'écran de votre nouvelle tentative de ping.**
-
-![ping_server_to_client](figures/ping_server_to_client.PNG)
->>>>>>> 6eb0bc6594ea079f0359d035b59c46fd76d1d387
 
 ---
 
@@ -353,13 +311,7 @@ ping 8.8.8.8
 
 ---
 
-<<<<<<< HEAD
 ![ping_internet](figures\ping_internet.jpg)
-=======
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
-
-![ping_internet](figures/ping_internet.jpg)
->>>>>>> 6eb0bc6594ea079f0359d035b59c46fd76d1d387
 
 ---
 
@@ -479,13 +431,7 @@ ping 8.8.8.8
 Faire une capture du ping.
 
 ---
-<<<<<<< HEAD
 ![question_b_ping_client_to_internet](figures\question_b_ping_client_to_internet.PNG)
-=======
-**LIVRABLE : capture d'écran de votre ping vers l'Internet.**
-
-![question_b_ping_client_to_internet](figures/question_b_ping_client_to_internet.PNG)
->>>>>>> 6eb0bc6594ea079f0359d035b59c46fd76d1d387
 
 ---
 
