@@ -242,7 +242,7 @@ ping 192.168.200.3
 ```
 ---
 
-![ping_client_to_server](figures\ping_client_to_server.PNG)
+![ping_client_to_server](figures/ping_client_to_server.PNG)
 
 ---
 
@@ -297,7 +297,7 @@ ping 192.168.100.3
 
 ---
 
-![ping_server_to_client](figures\ping_server_to_client.PNG)
+![ping_server_to_client](figures/ping_server_to_client.PNG)
 
 ---
 
@@ -311,7 +311,7 @@ ping 8.8.8.8
 
 ---
 
-![ping_internet](figures\ping_internet.jpg)
+![ping_internet](figures/ping_internet.jpg)
 
 ---
 
@@ -431,7 +431,7 @@ ping 8.8.8.8
 Faire une capture du ping.
 
 ---
-![question_b_ping_client_to_internet](figures\question_b_ping_client_to_internet.PNG)
+![question_b_ping_client_to_internet](figures/question_b_ping_client_to_internet.PNG)
 
 ---
 
@@ -472,7 +472,7 @@ ping www.google.com
 
 ---
 
-![question_d_ping_google_dns](figures\question_d_ping_google_dns.PNG)
+![question_d_ping_google_dns](figures/question_d_ping_google_dns.PNG)
 
 ---
 
@@ -499,7 +499,7 @@ iptables -A FORWARD -p udp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack -
 </ol>
 ---
 
-![question_e_ping_dns](figures\question_e_ping_dns.PNG)
+![question_e_ping_dns](figures/question_e_ping_dns.PNG)
 
 ---
 
@@ -566,7 +566,7 @@ iptables -A FORWARD -p tcp -s 192.168.200.3/32 --sport 80 -d 192.168.100.0/24 -m
 </ol>
 ---
 
-![question_g_wget_dmz](figures\question_g_wget_dmz.PNG)
+![question_g_wget_dmz](figures/question_g_wget_dmz.PNG)
 
 ---
 
@@ -603,11 +603,11 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 **SSH entre Client LAN et Server Web**
 
-![question_h_ssh_client_server](figures\question_h_ssh_client_server.PNG)
+![question_h_ssh_client_server](figures/question_h_ssh_client_server.PNG)
 
 **SSH entre Client LAN et Firewall**
 
-![question_h_ssh_client_firewall](figures\question_h_ssh_client_firewall.PNG)
+![question_h_ssh_client_firewall](figures/question_h_ssh_client_firewall.PNG)
 
 ---
 
@@ -643,6 +643,6 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 </ol>
 ---
 
-![question_j_iptables_rules](figures\question_j_iptables_rules.PNG)
+![question_j_iptables_rules](figures/question_j_iptables_rules.PNG)
 
 ---
