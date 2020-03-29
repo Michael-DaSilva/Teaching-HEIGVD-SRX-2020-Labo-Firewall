@@ -242,7 +242,7 @@ ping 192.168.200.3
 ```
 ---
 
-![ping_client_to_server](figures\ping_client_to_server.PNG)
+![ping_client_to_server](figures/ping_client_to_server.PNG)
 
 ---
 
@@ -297,7 +297,7 @@ ping 192.168.100.3
 
 ---
 
-![ping_server_to_client](figures\ping_server_to_client.PNG)
+![ping_server_to_client](figures/ping_server_to_client.PNG)
 
 ---
 
@@ -311,7 +311,7 @@ ping 8.8.8.8
 
 ---
 
-![ping_internet](figures\ping_internet.jpg)
+![ping_internet](figures/ping_internet.jpg)
 
 ---
 
@@ -431,7 +431,7 @@ ping 8.8.8.8
 Faire une capture du ping.
 
 ---
-![question_b_ping_client_to_internet](figures\question_b_ping_client_to_internet.PNG)
+![question_b_ping_client_to_internet](figures/question_b_ping_client_to_internet.PNG)
 
 ---
 
@@ -472,7 +472,7 @@ ping www.google.com
 
 ---
 
-![question_d_ping_google_dns](figures\question_d_ping_google_dns.PNG)
+![question_d_ping_google_dns](figures/question_d_ping_google_dns.PNG)
 
 ---
 
@@ -499,7 +499,9 @@ iptables -A FORWARD -p udp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack -
 </ol>
 ---
 
-![question_e_ping_dns](figures\question_e_ping_dns.PNG)
+
+
+![question_e_ping_dns](figures/question_e_ping_dns.PNG)
 
 ---
 
@@ -508,6 +510,8 @@ iptables -A FORWARD -p udp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack -
   </li>                                  
 </ol>
 ---
+
+
 **Réponse**
 
 Le serveur DNS est le service permettant de transformer un nom FQDN en adresse IP. Or pour ce faire, il est nécessaire d'ouvrir le port DNS (port 53 TCP/UDP) permettant de faire cette traduction. C'est pour cela que le premier ping n'a pas fonctionné, mais lors de l'ajout des règles de *FORWARD* pour le DNS, le ping fonctionne.
@@ -566,7 +570,9 @@ iptables -A FORWARD -p tcp -s 192.168.200.3/32 --sport 80 -d 192.168.100.0/24 -m
 </ol>
 ---
 
-![question_g_wget_dmz](figures\question_g_wget_dmz.PNG)
+
+
+![question_g_wget_dmz](figures/question_g_wget_dmz.PNG)
 
 ---
 
@@ -603,11 +609,11 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
 
 **SSH entre Client LAN et Server Web**
 
-![question_h_ssh_client_server](figures\question_h_ssh_client_server.PNG)
+![question_h_ssh_client_server](figures/question_h_ssh_client_server.PNG)
 
 **SSH entre Client LAN et Firewall**
 
-![question_h_ssh_client_firewall](figures\question_h_ssh_client_firewall.PNG)
+![question_h_ssh_client_firewall](figures/question_h_ssh_client_firewall.PNG)
 
 ---
 
@@ -616,6 +622,8 @@ ssh root@192.168.200.3 (password : celui que vous avez configuré)
   </li>                                  
 </ol>
 ---
+
+
 **Réponse**
 
 Permet de configurer le serveur sans avoir besoin d'interface graphique (ainsi qu'un écran/clavier supplémentaire) et de le faire depuis un autre poste de façon sécurisé
@@ -627,6 +635,8 @@ Permet de configurer le serveur sans avoir besoin d'interface graphique (ainsi q
   </li>                                  
 </ol>
 ---
+
+
 **Réponse**
 
 Ne pas laisser d'autres postes autre que celui ayant l'autorisation avoir accès sur le serveur en SSH (il pourrait avoir des attaques par brute force)
@@ -641,8 +651,12 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
   <li>Insérer la capture d’écran avec toutes vos règles iptables
   </li>                                  
 </ol>
+
+
 ---
 
-![question_j_iptables_rules](figures\question_j_iptables_rules.PNG)
+
+
+![question_j_iptables_rules](figures/question_j_iptables_rules.PNG)
 
 ---
