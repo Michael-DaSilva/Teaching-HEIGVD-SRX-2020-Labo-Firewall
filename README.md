@@ -510,7 +510,7 @@ iptables -A FORWARD -p udp -i eth0 -d 192.168.100.0/24 --sport 53 -m conntrack -
 ---
 **Réponse**
 
-
+Le serveur DNS est le service permettant de transformer un nom FQDN en adresse IP. Or pour ce faire, il est nécessaire d'ouvrir le port DNS (port 53 TCP/UDP) permettant de faire cette traduction. C'est pour cela que le premier ping n'a pas fonctionné, mais lors de l'ajout des règles de *FORWARD* pour le DNS, le ping fonctionne.
 
 ---
 
@@ -646,4 +646,3 @@ A présent, vous devriez avoir le matériel nécessaire afin de reproduire la ta
 ![question_j_iptables_rules](figures\question_j_iptables_rules.PNG)
 
 ---
-
